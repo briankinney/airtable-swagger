@@ -7,13 +7,17 @@ const process = require('process');
 
 
 function main() {
-    const inputFile = process.argv[1];
+    const inputFile = process.argv[2];
 
     if (inputFile) {
         const contents = fs.readFileSync(inputFile);
-        const schemaObject = convert.generateSwaggerObject(JSON.parse(contents));
+        const airtableSchemaObject = JSON.parse(contents);
+        const schemaObject = convert.generateSwaggerObject(airtableSchemaObject);
 
-        console.log(JSON.stringify(convert.generateSwaggerObject(schemaObject)));
+        console.log(JSON.stringify(schemaObject));
+    }
+    else {
+        console.error("Usage: airtable-to-swagger ${airtable-schema-json-file}");
     }
 }
 
