@@ -12,5 +12,6 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Brian Kinney",
-  "license": "ISC"
+  "license": "ISC",
+  "repository": "https://github.com/briankinney/airtable-swagger"
 }
