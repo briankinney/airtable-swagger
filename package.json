@@ -1,0 +1,16 @@
+{
+  "name": "airtable-swagger",
+  "version": "1.0.0",
+  "description": "A package for producing swagger documentation of Airtable bases",
+  "main": "bin/airtable-to-swagger.js",
+  "bin": {
+    "airtable-swagger": "airtable-to-swagger.js"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Brian Kinney",
+  "license": "ISC"
+}
