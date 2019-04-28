@@ -1,5 +1,3 @@
-module = {};
-
 const AIRTABLE_THUMBNAIL_SCHEMA = {
     required: [
         'url',
@@ -63,22 +61,27 @@ function columnToType(column) {
                     return {'type': 'number'};
                 case 'currency':
                     return {'type': 'number'};
+                case undefined:
+                    return {'type': 'number'};
                 default:
                     throw new Error(`Unable to infer the type of column ${column.name}: unknown numerical format ${column.typeOptions.format}`);
             }
+        case 'count':
+            return {'type': 'integer'};
         case 'multilineText':
         case 'text':
         case 'date':
         case 'foreignKey':
         case 'enum':
+        case 'select':
             // TODO: Properly use enum
             return {'type': 'string'};
         case 'checkbox':
             return {'type': 'boolean'};
         case 'multipleAttachment':
-            return {'type': 'array', 'items': {'$ref': '#/definitions/schemas/AirtableAttachment'}};
+            return {'type': 'array', 'items': {'$ref': '#/components/schemas/AirtableAttachment'}};
         case 'attachment':
-            return {'$ref': '#/definitions/schemas/AirtableAttachment'};
+            return {'$ref': '#/components/schemas/AirtableAttachment'};
         case 'formula':
         case 'rollup':
             if (column.resultType === 'formula' || column.resultType === 'rollup') {
@@ -97,8 +100,10 @@ function columnToType(column) {
 function columnIsReadOnly(column) {
     switch (column.type) {
         case 'rollup':
-            return true;
         case 'formula':
+        case 'count':
+        case 'attachment':
+        case 'multipleAttachment':
             return true;
         default:
             return false
@@ -121,16 +126,14 @@ function generateSwaggerObject(schema) {
         let editableFieldsSchema = {properties: {}};
         for (let j = 0; j < table.columns.length; j++) {
             let column = table.columns[j];
-            if (table.hasOwnProperty(column)) {
-                const swaggerType = columnToType(column);
-                allFieldsSchema.properties[column.name] = swaggerType;
-                if (!columnIsReadOnly(column)) {
-                    editableFieldsSchema.properties[column.name] = swaggerType;
-                }
+            const swaggerType = columnToType(column);
+            allFieldsSchema.properties[column.name] = swaggerType;
+            if (!columnIsReadOnly(column)) {
+                editableFieldsSchema.properties[column.name] = swaggerType;
             }
         }
         
-        const urlSafeName = encodeURIComponent(table.name);
+        const urlSafeName = table.name.replace(/[;/?:@=&" <>#%{}|\\^~[\]`]+/g, '');
 
         swaggerSchemas[`Read${urlSafeName}Fields`] = allFieldsSchema;
         swaggerSchemas[`Write${urlSafeName}Fields`] = editableFieldsSchema;
@@ -144,6 +147,11 @@ function generateSwaggerObject(schema) {
         swaggerSchemas[`Read${urlSafeName}RequestBody`] = {
             properties: {
                 fields: {'$ref': `#/components/schemas/Read${urlSafeName}Fields`}
+            }
+        };
+        swaggerSchemas[`Write${urlSafeName}RequestBody`] = {
+            properties: {
+                fields: {'$ref': `#/components/schemas/Write${urlSafeName}Fields`}
             }
         };
 
@@ -259,7 +267,7 @@ function generateSwaggerObject(schema) {
                     content: {
                         'application/json': {
                             schema: {
-                                '$ref': `#/components/schemas/Read${urlSafeName}RequestBody`
+                                '$ref': `#/components/schemas/Write${urlSafeName}RequestBody`
                             }
                         }
                     }
@@ -407,7 +415,5 @@ function generateSwaggerObject(schema) {
         paths: swaggerPaths
     }
 }
-
-console.log('loaded library');
 
 module.exports = {generateSwaggerObject};
