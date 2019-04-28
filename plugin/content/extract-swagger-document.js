@@ -1,2 +1,3 @@
-alert("attempting to send message");
-browser.runtime.message(window.application);
+const oasSchema = generateSwaggerObject(window.wrappedJSObject.application);
+
+console.log(JSON.stringify(oasSchema));

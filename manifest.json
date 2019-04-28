@@ -4,16 +4,12 @@
   "version": "1.0",
   "description": "Generates OAS 3.0 API Documentation from Airtable Docs",
   "icons": {
-    "48": "icons/icons8-user-manual-48.png"
+    "48": "plugin/icons/icons8-user-manual-48.png"
   },
   "content_scripts": [
     {
       "matches": ["*://airtable.com/*/api/docs"],
-      "js": ["content/extract-swagger-document.js"]
+      "js": ["src/convert.js", "plugin/content/extract-swagger-document.js"]
     }
-  ],
-  "sidebar_action": {
-    "default_panel": "sidebar/sidebar.html"
-  },
-  "web_accessible_resources": ["../src/convert.js"]
+  ]
 }

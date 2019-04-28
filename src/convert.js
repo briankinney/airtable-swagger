@@ -1,3 +1,5 @@
+module = {};
+
 const AIRTABLE_THUMBNAIL_SCHEMA = {
     required: [
         'url',
@@ -405,5 +407,7 @@ function generateSwaggerObject(schema) {
         paths: swaggerPaths
     }
 }
+
+console.log('loaded library');
 
 module.exports = {generateSwaggerObject};
