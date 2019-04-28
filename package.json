@@ -4,7 +4,7 @@
   "description": "A package for producing swagger documentation of Airtable bases",
   "main": "bin/airtable-to-swagger.js",
   "bin": {
-    "airtable-swagger": "airtable-to-swagger.js"
+    "airtable-swagger": "bin/airtable-to-swagger.js"
   },
   "dependencies": {},
   "devDependencies": {},
