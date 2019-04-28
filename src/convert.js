@@ -327,7 +327,7 @@ function generateSwaggerObject(schema) {
                     }
                 }
             },
-            'put': {
+            'patch': {
                 operationId: `update${urlSafeName}`,
                 security: [
                     {
