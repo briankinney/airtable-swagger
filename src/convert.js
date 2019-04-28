@@ -130,7 +130,7 @@ function generateSwaggerObject(schema) {
             }
         }
         
-        const urlSafeName = table.name.replace(/\s/, '');
+        const urlSafeName = encodeURIComponent(table.name);
 
         swaggerSchemas[`Read${urlSafeName}Fields`] = allFieldsSchema;
         swaggerSchemas[`Write${urlSafeName}Fields`] = editableFieldsSchema;
