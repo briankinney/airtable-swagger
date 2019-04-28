@@ -424,4 +424,8 @@ function generateSwaggerObject(schema) {
     }
 }
 
-module.exports = {generateSwaggerObject};
+// Get this to work as both as a module and as a content_script for a plugin
+try {
+    module.exports = {generateSwaggerObject};
+} catch (e) {}
+
