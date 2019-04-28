@@ -66,12 +66,20 @@ function columnToType(column) {
                 default:
                     throw new Error(`Unable to infer the type of column ${column.name}: unknown numerical format ${column.typeOptions.format}`);
             }
+        case 'foreignKey':
+            switch (column.typeOptions.relationship) {
+                case 'one':
+                    return {'type': 'string'};
+                case 'many':
+                    return {'type': 'array', 'items': {'type': 'string'}};
+                default:
+                    throw new Error(`Unknown relationship type ${column.typeOptions.relationship}`);
+            }
         case 'count':
             return {'type': 'integer'};
         case 'multilineText':
         case 'text':
         case 'date':
-        case 'foreignKey':
         case 'enum':
         case 'select':
             // TODO: Properly use enum
