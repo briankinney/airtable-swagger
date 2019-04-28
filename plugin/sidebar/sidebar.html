@@ -1,0 +1,13 @@
+<head>
+    <script src="../../src/convert.js"></script>
+</head>
+<body>
+<button id="parse">Generate Swagger</button>
+<textarea id="output"></textarea>
+<script>
+    browser.runtime.onMessage.addListener(function (message) {
+        console.log('hello');
+        console.log(convert.generateSwaggerObject(message));
+    });
+</script>
+</body>
