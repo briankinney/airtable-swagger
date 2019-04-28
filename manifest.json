@@ -11,5 +11,15 @@
       "matches": ["*://airtable.com/*/api/docs"],
       "js": ["src/convert.js", "plugin/content/extract-swagger-document.js"]
     }
-  ]
+  ],
+  "page_action": {
+    "default_icon": {
+      "48": "plugin/icons/icons8-user-manual-48.png"
+    },
+    "default_title": "Copy Swagger Definition",
+    "show_matches": ["*://airtable.com/*/api/docs*"]
+  },
+  "background": {
+    "scripts": ["plugin/background/background.js"]
+  }
 }
