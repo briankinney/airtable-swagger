@@ -1,3 +1,4 @@
+// Common schema definitions
 const AIRTABLE_THUMBNAIL_SCHEMA = {
     required: [
         'url',
@@ -51,6 +52,11 @@ const AIRTABLE_DELETED_RESPONSE = {
     }
 };
 
+/**
+ * Convert a column described in Airtable's schema definition format to a corresponding field definition in OAS 3.0 format
+ * @param {object} column
+ * @returns {{type: string, items: {type: string}}|{type: string, items: {$ref: string}}|{$ref: string}|{type: string}|{type}|{type, items}|*}
+ */
 function columnToType(column) {
     switch (column.type) {
         case 'number':
@@ -58,9 +64,8 @@ function columnToType(column) {
                 case 'integer':
                     return {'type': 'integer'};
                 case 'decimal':
-                    return {'type': 'number'};
                 case 'currency':
-                    return {'type': 'number'};
+                case 'percent':
                 case undefined:
                     return {'type': 'number'};
                 default:
@@ -73,13 +78,14 @@ function columnToType(column) {
                 case 'many':
                     return {'type': 'array', 'items': {'type': 'string'}};
                 default:
-                    throw new Error(`Unknown relationship type ${column.typeOptions.relationship}`);
+                    throw new Error(`Unknown relationship type ${column.typeOptions.relationship} in column ${column.name}`);
             }
         case 'count':
             return {'type': 'integer'};
         case 'multilineText':
         case 'text':
         case 'date':
+        case 'phone':
         case 'enum':
         case 'select':
             // TODO: Properly use enum
@@ -90,6 +96,11 @@ function columnToType(column) {
             return {'type': 'array', 'items': {'$ref': '#/components/schemas/AirtableAttachment'}};
         case 'attachment':
             return {'$ref': '#/components/schemas/AirtableAttachment'};
+        case 'lookup':
+            // TODO: Use available metadata fields to more precisely describe the type
+            if (column.typeOptions.resultType === 'foreignKey') {
+                return {'type': 'array'}
+            }
         case 'formula':
         case 'rollup':
             if (column.resultType === 'formula' || column.resultType === 'rollup') {
@@ -105,9 +116,15 @@ function columnToType(column) {
     }
 }
 
+/**
+ * Returns true if the column is read-only in Airtable's API
+ * @param column
+ * @returns {boolean}
+ */
 function columnIsReadOnly(column) {
     switch (column.type) {
         case 'rollup':
+        case 'lookup':
         case 'formula':
         case 'count':
         case 'attachment':
@@ -118,6 +135,11 @@ function columnIsReadOnly(column) {
     }
 }
 
+/**
+ * Convert an Airtable schema description object into an OAS object describing the Airtable Base API
+ * @param schema
+ * @returns {{components: {schemas: {AirtableDeleted: {required: string[], properties: {deleted: {type: string}, id: {type: string}}}, AirtableThumbnails: {required: string[], properties: {small: {$ref: string}, large: {$ref: string}}}, AirtableAttachment: {required: string[], properties: {filename: {type: string}, size: {type: string}, id: {type: string}, type: {type: string}, thumbnails: {$ref: string}, url: {type: string}}}, AirtableThumbnail: {required: string[], properties: {width: {type: string}, url: {type: string}, height: {type: string}}}}, securitySchemes: {BearerAuth: {scheme: string, type: string}}}, servers: {url: string}[], openapi: string, paths, info: {title: string, version: string}}}
+ */
 function generateSwaggerObject(schema) {
 
     let swaggerSchemas = {
