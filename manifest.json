@@ -3,7 +3,7 @@
   "name": "Airtable Swagger Generator",
   "author": "Brian Kinney",
   "homepage_url": "https://github.com/briankinney/airtable-swagger",
-  "version": "1.0",
+  "version": "1.1",
   "description": "Generates OAS 3.0 API Documentation from Airtable Docs",
   "icons": {
     "48": "plugin/icons/icons8-user-manual-48.png"
