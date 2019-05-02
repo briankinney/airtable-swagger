@@ -18,10 +18,14 @@
     "default_icon": {
       "48": "plugin/icons/icons8-user-manual-48.png"
     },
-    "default_title": "Copy Swagger Definition",
+    "default_title": "Open Airtable-Swagger sidebar",
     "show_matches": ["*://airtable.com/*/api/docs*"]
   },
   "background": {
     "scripts": ["plugin/background/background.js"]
+  },
+  "sidebar_action": {
+    "default_panel": "plugin/sidebar/sidebar.html",
+    "open_at_install": false
   }
 }
