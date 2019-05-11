@@ -111,11 +111,11 @@ function columnToType(column) {
                     const items = columnToType({
                         type: column.typeOptions.resultType,
                         typeOptions: column.typeOptions,
-                        name: column.name}).type;
+                        name: column.name
+                    }).type;
                     if (items) {
                         type.items = {type: items};
-                    }
-                    else {
+                    } else {
                         throw new Error(`Column ${column.name} is unsupported. Lookup type columns cannot have result type ${column.typeOptions.resultType}`);
                     }
             }
@@ -136,7 +136,7 @@ function columnToType(column) {
 }
 
 /**
- * Returns true if the column is read-only in Airtable's API
+ * Returns true if the column will be used in read operations only
  * @param column
  * @returns {boolean}
  */
@@ -148,6 +148,7 @@ function columnIsReadOnly(column) {
         case 'count':
         case 'attachment':
         case 'multipleAttachment':
+            // TODO: Support creating attachments
             return true;
         default:
             return false
@@ -181,7 +182,7 @@ function generateSwaggerObject(schema) {
                 editableFieldsSchema.properties[column.name] = swaggerType;
             }
         }
-        
+
         const urlSafeName = table.name.replace(/[;/?:@=&" <>#%{}|\\^~[\]`]+/g, '');
 
         swaggerSchemas[`Read${urlSafeName}Fields`] = allFieldsSchema;
@@ -468,5 +469,6 @@ function generateSwaggerObject(schema) {
 // Get this to work as both as a module and as a content_script for a plugin
 try {
     module.exports = {generateSwaggerObject};
-} catch (e) {}
+} catch (e) {
+}
 
