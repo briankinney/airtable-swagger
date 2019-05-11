@@ -62,6 +62,7 @@ function columnToType(column) {
         case 'number':
             switch (column.typeOptions.format) {
                 case 'integer':
+                case 'duration':
                     return {'type': 'integer'};
                 case 'decimal':
                 case 'currency':
@@ -74,7 +75,6 @@ function columnToType(column) {
         case 'foreignKey':
             switch (column.typeOptions.relationship) {
                 case 'one':
-                    return {'type': 'string'};
                 case 'many':
                     return {'type': 'array', 'items': {'type': 'string'}};
                 default:
@@ -97,13 +97,32 @@ function columnToType(column) {
         case 'attachment':
             return {'$ref': '#/components/schemas/AirtableAttachment'};
         case 'lookup':
-            // TODO: Use available metadata fields to more precisely describe the type
-            if (column.typeOptions.resultType === 'foreignKey') {
-                return {'type': 'array'}
+            let type = {'type': 'array'};
+            switch (column.typeOptions.resultType) {
+                case 'foreignKey':
+                    type.items = {'type': 'string'};
+                    break;
+                case 'multipleAttachment':
+                case 'attachment':
+                case 'formula':
+                case 'rollup':
+                    throw new Error(`Column ${column.name} is unsupported. Lookup type columns cannot have result type ${column.typeOptions.resultType}`);
+                default:
+                    const items = columnToType({
+                        type: column.typeOptions.resultType,
+                        typeOptions: column.typeOptions,
+                        name: column.name}).type;
+                    if (items) {
+                        type.items = {type: items};
+                    }
+                    else {
+                        throw new Error(`Column ${column.name} is unsupported. Lookup type columns cannot have result type ${column.typeOptions.resultType}`);
+                    }
             }
+            return type;
         case 'formula':
         case 'rollup':
-            if (column.resultType === 'formula' || column.resultType === 'rollup') {
+            if (column.typeOptions.resultType === 'formula' || column.typeOptions.resultType === 'rollup') {
                 throw new Error(`Column ${column.name} is invalid. Rollup and Formula type columns cannot have formula or rollup resultType`);
             }
             return columnToType({
