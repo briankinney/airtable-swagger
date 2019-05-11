@@ -8,7 +8,7 @@
         }
         else if (m.operation === 'extractSchema') {
             browser.tabs.query({active: true}).then(function (tabInfo) {
-                browser.tabs.sendMessage(tabInfo[0].id, {operation: 'requestSchema'});
+                browser.tabs.sendMessage(tabInfo[0].id, {operation: 'requestSchema', format: m.format});
             }).catch(function (e) {
                 console.log(e);
             });

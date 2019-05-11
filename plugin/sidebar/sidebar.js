@@ -6,11 +6,19 @@
         }
     });
 
-    let extractButton = document.getElementById('extractSchemaButton');
-    extractButton.addEventListener('click', function () {
-        browser.runtime.sendMessage({operation: 'extractSchema'}).then(function () {
+    let extractOASButton = document.getElementById('extractOASButton');
+    extractOASButton.addEventListener('click', function () {
+        browser.runtime.sendMessage({operation: 'extractSchema', format: 'oas3'}).then(function () {
         }).catch(function (e) {
             console.log(e);
         });
     });
+
+    let extractAirtableButton = document.getElementById('extractAirtableButton');
+    extractAirtableButton.addEventListener('click', function () {
+        browser.runtime.sendMessage({operation: 'extractSchema', format: 'airtable'}).then(function() {
+        }).catch(function (e) {
+            console.log(e);
+        })
+    })
 })();
