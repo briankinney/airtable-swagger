@@ -81,6 +81,7 @@ function columnToType(column) {
                     throw new Error(`Unknown relationship type ${column.typeOptions.relationship} in column ${column.name}`);
             }
         case 'count':
+        case 'autoNumber':
             return {'type': 'integer'};
         case 'multilineText':
         case 'text':
@@ -90,6 +91,8 @@ function columnToType(column) {
         case 'select':
             // TODO: Properly use enum
             return {'type': 'string'};
+        case 'multiSelect':
+            return {'type': 'array', 'items': {'type': 'string'}};
         case 'checkbox':
             return {'type': 'boolean'};
         case 'multipleAttachment':
@@ -146,6 +149,7 @@ function columnIsReadOnly(column) {
         case 'lookup':
         case 'formula':
         case 'count':
+        case 'autoNumber':
         case 'attachment':
         case 'multipleAttachment':
             // TODO: Support creating attachments
