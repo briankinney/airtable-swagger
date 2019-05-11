@@ -1,5 +1,4 @@
 (function () {
-    console.log('Registering listener');
     try {
         browser.runtime.onMessage.addListener(function (m) {
             if (m.operation === 'requestSchema') {
@@ -24,5 +23,4 @@
     catch (e) {
         console.log(e);
     }
-    console.log('Registered');
 })();
