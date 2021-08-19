@@ -82,6 +82,7 @@ function columnToType(column) {
             }
         case 'count':
         case 'autoNumber':
+        case 'rating':
             return {'type': 'integer'};
         case 'multilineText':
         case 'text':
@@ -93,6 +94,20 @@ function columnToType(column) {
             return {'type': 'string'};
         case 'multiSelect':
             return {'type': 'array', 'items': {'type': 'string'}};
+        case 'singleSelect':
+            return {'type': 'string'};
+        case 'collaborator':
+            return {'type': 'object', 'properties': {'email': {'type': 'string'}, 'id': {'type': 'string'}}};
+        case 'button':
+            switch(column.typeOptions.actionType) {
+                case 'openUrl':
+                    switch (column.typeOptions.resultType) {
+                        case 'text':
+                            return {'type': 'object', 'properties': {'label':{'type':'string'},'url': {'type': 'string'}}};
+                    }
+                default:
+                    throw new Error(`hit this error`);
+            }
         case 'checkbox':
             return {'type': 'boolean'};
         case 'multipleAttachment':
@@ -151,6 +166,7 @@ function columnIsReadOnly(column) {
         case 'count':
         case 'autoNumber':
         case 'attachment':
+        case 'button':
         case 'multipleAttachment':
             // TODO: Support creating attachments
             return true;

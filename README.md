@@ -39,8 +39,8 @@ your-computer:/path/to/airtable-swagger$ npm i -g .
 ### Usage
 
 1. View the source of the Airtable documentation page generated for your base
-2. Find the line containing `window.location = {...}`
-3. Copy the value of `window.location` to a file
+2. Find the line containing `window.application = {...}`
+3. Copy the value of `window.application` to a file, ex: `airtable-schema.json`
 4. Run the tool:
     ```bash
     airtable-swagger /path/to/airtable-schema.json

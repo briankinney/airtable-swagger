@@ -1,4 +1,5 @@
 (function () {
+    //browser object
     browser.runtime.onMessage.addListener(function (m) {
         if (m.operation === 'setSidebarContent') {
             let definitionElement = document.getElementById('definition');
@@ -16,6 +17,8 @@
 
     let extractAirtableButton = document.getElementById('extractAirtableButton');
     extractAirtableButton.addEventListener('click', function () {
+        // then here attaches callbacks and catches error when failed
+        // promise chain
         browser.runtime.sendMessage({operation: 'extractSchema', format: 'airtable'}).then(function() {
         }).catch(function (e) {
             console.log(e);

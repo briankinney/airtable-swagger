@@ -6,6 +6,7 @@
                 case 'object':
                     let result = {};
                     for (let key in obj) {
+                        // todo: what is a foreign table?
                         if (obj.hasOwnProperty(key) && key !== 'foreignTable') {
                             result[key] = removeForeignTables(obj[key]);
                         }
@@ -27,6 +28,7 @@
 
         browser.runtime.onMessage.addListener(function (m) {
             if (m.operation === 'requestSchema') {
+                // how to know which property to access
                 let schema = window.wrappedJSObject.application;
 
                 if (m.format === 'oas3') {
