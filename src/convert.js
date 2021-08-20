@@ -106,7 +106,7 @@ function columnToType(column) {
                             return {'type': 'object', 'properties': {'label':{'type':'string'},'url': {'type': 'string'}}};
                     }
                 default:
-                    throw new Error(`hit this error`);
+                    throw new Error(`Column ${column.name} is unsupported. BUtton type columns cannot have action type ${column.typeOptions.actionType}`);
             }
         case 'checkbox':
             return {'type': 'boolean'};
