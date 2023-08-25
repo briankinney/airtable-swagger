@@ -59,8 +59,10 @@ const AIRTABLE_DELETED_RESPONSE = {
  */
 function columnToType(column) {
     switch (column.type) {
+        case 'currency':
+            return {'type': 'number'};
         case 'number':
-            switch (column.typeOptions.format) {
+            switch (column?.typeOptions?.format) {
                 case 'integer':
                 case 'duration':
                     return {'type': 'integer'};
@@ -70,8 +72,15 @@ function columnToType(column) {
                 case undefined:
                     return {'type': 'number'};
                 default:
+                    if (column.typeOptions && !column.typeOptions?.format) {
+                        return {'type': column.typeOptions.result.type };
+                    }
+
                     throw new Error(`Unable to infer the type of column ${column.name}: unknown numerical format ${column.typeOptions.format}`);
             }
+        case 'multipleLookupValues':
+        case 'multipleRecordLinks':
+            return {'type': 'array', 'items': {'type': 'string'}}
         case 'foreignKey':
             switch (column.typeOptions.relationship) {
                 case 'one':
@@ -89,8 +98,14 @@ function columnToType(column) {
         case 'phone':
         case 'enum':
         case 'select':
+        case 'singleSelect':
+        case 'singleLineText':
+        case 'createdTime':
+        case 'lastModifiedTime':
+        case 'url':
             // TODO: Properly use enum
             return {'type': 'string'};
+        case 'multipleAttachments':
         case 'multiSelect':
             return {'type': 'array', 'items': {'type': 'string'}};
         case 'checkbox':
@@ -125,12 +140,12 @@ function columnToType(column) {
             return type;
         case 'formula':
         case 'rollup':
-            if (column.typeOptions.resultType === 'formula' || column.typeOptions.resultType === 'rollup') {
+            if (column.options.result.type === 'formula' || column.options.result.type === 'rollup') {
                 throw new Error(`Column ${column.name} is invalid. Rollup and Formula type columns cannot have formula or rollup resultType`);
             }
             return columnToType({
-                type: column.typeOptions.resultType,
-                typeOptions: column.typeOptions,
+                type: column.options.result.type,
+                typeOptions: column.options,
                 name: column.name
             });
         default:
@@ -178,8 +193,8 @@ function generateSwaggerObject(schema) {
         let table = schema.tables[i];
         let allFieldsSchema = {properties: {}};
         let editableFieldsSchema = {properties: {}};
-        for (let j = 0; j < table.columns.length; j++) {
-            let column = table.columns[j];
+        for (let j = 0; j < table.fields.length; j++) {
+            let column = table.fields[j];
             const swaggerType = columnToType(column);
             allFieldsSchema.properties[column.name] = swaggerType;
             if (!columnIsReadOnly(column)) {
