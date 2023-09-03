@@ -61,6 +61,8 @@ function columnToType(column) {
     switch (column.type) {
         case 'currency':
             return {'type': 'number'};
+        case 'percent':
+            return {'type': 'number'};
         case 'number':
             switch (column?.typeOptions?.format) {
                 case 'integer':
@@ -94,6 +96,7 @@ function columnToType(column) {
             return {'type': 'integer'};
         case 'multilineText':
         case 'text':
+        case 'richText':
         case 'date':
         case 'phone':
         case 'enum':

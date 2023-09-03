@@ -9,6 +9,7 @@
   "dependencies": {},
   "devDependencies": {},
   "scripts": {
+    "generate": "node ./bin/airtable-to-swagger.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Brian Kinney",
