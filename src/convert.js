@@ -98,6 +98,7 @@ function columnToType(column) {
         case 'text':
         case 'richText':
         case 'date':
+        case 'dateTime':
         case 'phone':
         case 'enum':
         case 'select':
